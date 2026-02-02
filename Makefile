@@ -24,6 +24,9 @@ depfreeze: venv
 	# Generate a requirements.txt file with all the dependencies installed in the virtual environment
 	$(PIP) freeze > requirements.txt
 
+run: venv
+	$(PYTHON) main.py
+
 lint: venv
 	$(PYTHON) -m ruff check --select I --fix
 	$(PYTHON) -m ruff format
