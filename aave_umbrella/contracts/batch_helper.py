@@ -17,9 +17,13 @@ class IOData:
 
 
 class BatchHelper(BaseContract):
-    def __init__(self, web3):
+    def __init__(self, web3: AsyncWeb3):
         super().__init__(web3, BATCH_HELPER_ADDRESS, BATCH_HELPER_ABI)
 
     async def deposit(self, signer: LocalAccount, params: IOData):
         params_tuple = astuple(params)
         return await self.tx("deposit", signer, params_tuple)
+
+    async def redeem(self, signer: LocalAccount, params: IOData):
+        params_tuple = astuple(params)
+        return await self.tx("redeem", signer, params_tuple)
