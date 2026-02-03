@@ -1,12 +1,10 @@
-from decimal import Decimal
-
 from eth_account.signers.local import LocalAccount
 from web3 import AsyncWeb3
 
 from aave_umbrella.config.addresses import USDC_ADDRESS
 from aave_umbrella.contracts.erc20 import ERC20
 from aave_umbrella.forks.impersonate import impersonate_account
-from aave_umbrella.utils.math import balance_to_decimal
+from aave_umbrella.utils.math import amount_to_small_units
 
 USDC_WHALE = "0x3757c6490019b6c9b0b38c3b89fdf83155c2661f"
 
@@ -38,7 +36,7 @@ async def fund_user(
     for token_address, (whale_address, amount) in tokens.items():
         token_contract = ERC20(web3, token_address)
         decimals = await token_contract.decimals()
-        token_amount = balance_to_decimal(amount, decimals)
+        token_amount = amount_to_small_units(amount, decimals)
 
         async with impersonate_account(web3, whale_address):
             success = await _fund(
@@ -58,7 +56,7 @@ async def _fund(
     token_address: str,
     from_address: str,
     to_address: str,
-    amount: Decimal,
+    amount: int,
 ) -> bool:
     token = ERC20(web3, token_address)
     tx_receipt = await token.transfer(signer=from_address, to=to_address, amount=amount)

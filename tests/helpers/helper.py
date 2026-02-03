@@ -6,13 +6,13 @@ from aave_umbrella.config.addresses import USDC_ADDRESS, USDC_STAKE_TOKEN
 from aave_umbrella.contracts.batch_helper import IOData
 from aave_umbrella.contracts.erc20 import ERC20
 from aave_umbrella.forks.funding import fund_user
-from aave_umbrella.utils.math import balance_to_decimal
+from aave_umbrella.utils.math import amount_to_small_units
 
 
 async def fund_and_deposit(web3: AsyncWeb3, user_account: LocalAccount):
     stake_token_address = USDC_STAKE_TOKEN
     edge_token_address = USDC_ADDRESS
-    deposit_amount = balance_to_decimal(500, 6)  # 500 USDC
+    deposit_amount = amount_to_small_units(500, 6)  # 500 USDC
     stake_stata_token = ERC20(web3, stake_token_address)
 
     # Fund the user account

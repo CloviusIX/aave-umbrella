@@ -8,7 +8,9 @@ from aave_umbrella.config.addresses import (
 from aave_umbrella.contracts.batch_helper import IOData
 from aave_umbrella.contracts.erc20 import ERC20
 from aave_umbrella.forks.funding import fund_user
-from aave_umbrella.utils.math import balance_to_decimal
+from aave_umbrella.utils.math import (
+    amount_to_small_units,
+)
 
 
 @pytest.mark.asyncio
@@ -17,7 +19,7 @@ async def test_deposit(web3, user_account):
     stake_token_address = USDC_STAKE_TOKEN
     edge_token_address = USDC_ADDRESS
     stake_stata_token = ERC20(web3, stake_token_address)
-    deposit_amount = balance_to_decimal(500, 6)  # 500 USDC
+    deposit_amount = amount_to_small_units(500, 6)  # 500 USDC
 
     # Fund the user account
     await fund_user(web3, user_account)
@@ -43,7 +45,7 @@ async def test_deposit(web3, user_account):
 
     # Verify shares in user account
     final_shares_balance = await stake_stata_token.balance_of(
-        wallet_address=user_account.address, readable=True
+        wallet_address=user_account.address
     )
 
     assert final_shares_balance > current_shares_balance

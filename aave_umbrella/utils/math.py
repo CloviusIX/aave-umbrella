@@ -1,11 +1,9 @@
 from decimal import Decimal
 
 
-def balance_to_decimal(balance: int, decimals: int) -> Decimal:
-    """Convert balance from integer to decimal representation."""
-    return balance * (10**decimals)
-
-
-def decimal_to_balance(balance: Decimal, decimals: int) -> int:
-    """Convert amount from decimal to integer balance representation."""
-    return int(balance / (10**decimals))
+def amount_to_small_units(amount: Decimal | int, decimals: int) -> int:
+    """
+    Convert token units to base units (uint256).
+    Example: 0.5 USDC → 500_000
+    """
+    return int(amount * (Decimal(10) ** decimals))

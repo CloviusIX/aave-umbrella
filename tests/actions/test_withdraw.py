@@ -8,6 +8,7 @@ from aave_umbrella.config.addresses import (
 from aave_umbrella.contracts.batch_helper import BatchHelper, IOData
 from aave_umbrella.contracts.erc20 import ERC20
 from aave_umbrella.contracts.stake_token import StakeToken
+from aave_umbrella.utils.math import amount_to_small_units
 from tests.helpers.helper import back_to_the_future, fund_and_deposit
 
 
@@ -67,9 +68,10 @@ async def test_redeem(web3, user_account):
     )
 
     edge_contract = ERC20(web3, edge_token_address)
-    edge_balance = await edge_contract.balance_of(
-        wallet_address=user_account.address, readable=True
-    )
+    edge_balance = await edge_contract.balance_of(wallet_address=user_account.address)
 
     assert stata_balance == 0
-    assert edge_balance >= 1000  # 500 initial + 500 redeemed
+    edge_token_decimal = await edge_contract.decimals()
+    assert edge_balance >= amount_to_small_units(
+        1000, edge_token_decimal
+    )  # 500 initial + 500 redeemed
