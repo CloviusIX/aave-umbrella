@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from eth_account.signers.local import LocalAccount
+from web3 import AsyncWeb3
 
 from aave_umbrella.abi.erc20_abi import ERC20_ABI
 from aave_umbrella.contracts.base import BaseContract
@@ -8,7 +9,7 @@ from aave_umbrella.utils.math import decimal_to_balance
 
 
 class ERC20(BaseContract):
-    def __init__(self, web3, address):
+    def __init__(self, web3: AsyncWeb3, address: str):
         super().__init__(web3, address, ERC20_ABI)
 
     async def balance_of(self, wallet_address: str, readable: bool = False) -> int:

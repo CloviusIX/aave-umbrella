@@ -1,16 +1,15 @@
 import pytest
-from eth_account import Account
 
+from aave_umbrella.config.addresses import USDC_ADDRESS
 from aave_umbrella.contracts.erc20 import ERC20
-from aave_umbrella.forks.funding import USDC_ADDRESS, fund_user
+from aave_umbrella.forks.funding import fund_user
 from aave_umbrella.utils.math import balance_to_decimal
 
 
 @pytest.mark.asyncio
-async def test_fund_user(web3):
+async def test_fund_user(web3, user_account):
     """Test funding a user from whale account"""
     # Arrange
-    user_account = Account.create()
     usdc_contract = ERC20(web3, USDC_ADDRESS)
     current_expected_amount = 0
     expected_amount_int = 1000

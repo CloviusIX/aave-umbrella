@@ -1,4 +1,4 @@
-ERC20_ABI = [
+ERC20_ABI = """[
     {
         "constant": "true",
         "inputs": [{"name": "account", "type": "address"}],
@@ -6,7 +6,7 @@ ERC20_ABI = [
         "outputs": [{"name": "", "type": "uint256"}],
         "payable": "false",
         "stateMutability": "view",
-        "type": "function",
+        "type": "function"
     },
     {
         "constant": "true",
@@ -15,30 +15,30 @@ ERC20_ABI = [
         "outputs": [{"name": "", "type": "uint8"}],
         "payable": "false",
         "stateMutability": "view",
-        "type": "function",
+        "type": "function"
     },
     {
         "constant": "false",
         "inputs": [
             {"name": "to", "type": "address"},
-            {"name": "amount", "type": "uint256"},
+            {"name": "amount", "type": "uint256"}
         ],
         "name": "transfer",
         "outputs": [{"name": "", "type": "bool"}],
         "payable": "false",
         "stateMutability": "nonpayable",
-        "type": "function",
+        "type": "function"
     },
     {
         "constant": "false",
         "inputs": [
             {"name": "spender", "type": "address"},
-            {"name": "amount", "type": "uint256"},
+            {"name": "amount", "type": "uint256"}
         ],
         "name": "approve",
         "outputs": [{"name": "", "type": "bool"}],
         "payable": "false",
         "stateMutability": "nonpayable",
-        "type": "function",
-    },
-]
+        "type": "function"
+    }
+]"""
