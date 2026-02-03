@@ -1,16 +1,15 @@
-# This is a sample Python script.
+import asyncio
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f"Hi, {name}")  # Press ⌘F8 to toggle the breakpoint.
+from aave_umbrella.forks.account import get_user_account
+from aave_umbrella.forks.funding import fund_user
+from aave_umbrella.providers.web3_client import build_web3_connection
 
 
-# Press the green button in the gutter to run the script.
+async def main() -> None:
+    web3 = await build_web3_connection()
+    user_account = await get_user_account(web3)
+    await fund_user(web3, user_account)
+
+
 if __name__ == "__main__":
-    print_hi("PyCharm")
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    asyncio.run(main())
