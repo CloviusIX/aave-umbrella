@@ -1,10 +1,11 @@
-from typing import Any
+from typing import TypeAlias
 
 from web3 import AsyncHTTPProvider, AsyncWeb3
-from web3.contract import AsyncContract
+
+AsyncW3: TypeAlias = AsyncWeb3[AsyncHTTPProvider]
 
 
-async def build_web3_connection() -> AsyncWeb3:
+async def build_web3_connection() -> AsyncW3:
     """
     Connect to the blockchain network
     :return: The asynchronous web3 connection
@@ -16,18 +17,3 @@ async def build_web3_connection() -> AsyncWeb3:
         raise ConnectionError("Failed to connect to the network")
 
     return w3
-
-
-async def eth_call(
-    contract: AsyncContract,
-    function_name: str,
-    params: list[Any] | None = None,
-    block_identifier: str | int | None = "pending",
-) -> Any:
-    """
-    Asynchronously calls a given smart contract function using its name and parameters, and returns the result.
-    """
-    contract_function = getattr(contract.functions, function_name)
-    return await contract_function(*params or []).call(
-        block_identifier=block_identifier
-    )

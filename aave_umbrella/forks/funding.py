@@ -1,9 +1,9 @@
 from eth_account.signers.local import LocalAccount
-from web3 import AsyncWeb3
 
 from aave_umbrella.config.addresses import USDC_ADDRESS
 from aave_umbrella.contracts.erc20 import ERC20
 from aave_umbrella.forks.impersonate import impersonate_account
+from aave_umbrella.providers.web3_client import AsyncW3
 from aave_umbrella.utils.math import amount_to_small_units
 
 USDC_WHALE = "0x3757c6490019b6c9b0b38c3b89fdf83155c2661f"
@@ -16,7 +16,7 @@ DEFAULT_TOKENS = {
 
 
 async def fund_user(
-    web3: AsyncWeb3,
+    web3: AsyncW3,
     user_account: LocalAccount,
     tokens: dict[str, tuple[str, int]] | None = None,
 ) -> bool:
@@ -52,7 +52,7 @@ async def fund_user(
 
 
 async def _fund(
-    web3: AsyncWeb3,
+    web3: AsyncW3,
     token_address: str,
     from_address: str,
     to_address: str,

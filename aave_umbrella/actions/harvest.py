@@ -1,12 +1,12 @@
 from eth_account.signers.local import LocalAccount
 from eth_typing import ChecksumAddress
-from web3 import AsyncWeb3
 
 from aave_umbrella.contracts.rewards_controller import RewardsController
+from aave_umbrella.providers.web3_client import AsyncW3
 
 
 async def claim_all_rewards(
-    web3: AsyncWeb3,
+    web3: AsyncW3,
     user_account: LocalAccount,
     stake_token: ChecksumAddress,
     receiver: ChecksumAddress,
@@ -27,8 +27,8 @@ async def claim_all_rewards(
 
 
 async def calculate_current_user_rewards(
-    web3: AsyncWeb3, stake_token: ChecksumAddress, user_address: ChecksumAddress
-):
+    web3: AsyncW3, stake_token: ChecksumAddress, user_address: ChecksumAddress
+) -> tuple[list[str], list[int]]:
     """
     Calculate the current rewards for a user for stake token
     :param web3: Web3 connection
@@ -37,14 +37,12 @@ async def calculate_current_user_rewards(
     :return: Current rewards amount
     """
     rewards_contract = RewardsController(web3=web3)
-    current_rewards = await rewards_contract.calculate_current_user_rewards(
-        stake_token, user_address
-    )
+    current_rewards = await rewards_contract.calculate_current_user_rewards(stake_token, user_address)
     return current_rewards
 
 
 async def calculate_current_emission(
-    web3: AsyncWeb3, stake_token: ChecksumAddress, reward_address: ChecksumAddress
+    web3: AsyncW3, stake_token: ChecksumAddress, reward_address: ChecksumAddress
 ) -> int:
     """
     Calculate the current emission for a stake token and reward token
@@ -54,7 +52,5 @@ async def calculate_current_emission(
     :return: Current emission amount
     """
     rewards_contract = RewardsController(web3=web3)
-    current_emission = await rewards_contract.calculate_current_emission(
-        stake_token, reward_address
-    )
+    current_emission = await rewards_contract.calculate_current_emission(stake_token, reward_address)
     return current_emission

@@ -1,19 +1,19 @@
 from eth_account.signers.local import LocalAccount
-from web3 import AsyncWeb3
 
 from aave_umbrella.actions.deposit import deposit
-from aave_umbrella.config.addresses import USDC_ADDRESS, USDC_STAKE_TOKEN
+from aave_umbrella.config.addresses import USDC_ADDRESS, USDC_UMBRELLA_STAKE_TOKEN
 from aave_umbrella.contracts.batch_helper import IOData
 from aave_umbrella.contracts.erc20 import ERC20
 from aave_umbrella.forks.funding import fund_user
+from aave_umbrella.providers.web3_client import AsyncW3
 from aave_umbrella.utils.math import amount_to_small_units
 
 
-async def fund_and_deposit(web3: AsyncWeb3, user_account: LocalAccount):
-    stake_token_address = USDC_STAKE_TOKEN
+async def fund_and_deposit(web3: AsyncW3, user_account: LocalAccount) -> int:
+    stake_token_address = USDC_UMBRELLA_STAKE_TOKEN
     edge_token_address = USDC_ADDRESS
     deposit_amount = amount_to_small_units(500, 6)  # 500 USDC
-    stake_stata_token = ERC20(web3, stake_token_address)
+    stake_token_contract = ERC20(web3, stake_token_address)
 
     # Fund the user account
     await fund_user(web3, user_account)
@@ -30,12 +30,12 @@ async def fund_and_deposit(web3: AsyncWeb3, user_account: LocalAccount):
     )
 
     assert deposit_status is True
-    balance = await stake_stata_token.balance_of(wallet_address=user_account.address)
+    balance = await stake_token_contract.balance_of(wallet_address=user_account.address)
 
     return balance
 
 
-async def back_to_the_future(web3: AsyncWeb3, target_timestamp: int):
+async def back_to_the_future(web3: AsyncW3, target_timestamp: int) -> None:
     """
     Advances EVM time to after the cooldown period.
     :param target_timestamp:
@@ -43,9 +43,7 @@ async def back_to_the_future(web3: AsyncWeb3, target_timestamp: int):
     :return:
     """
     # Simulate waiting for the cooldown period to pass
-    delta = await compute_delta_to_redeemable(
-        web3=web3, target_timestamp=target_timestamp
-    )
+    delta = await compute_delta_to_redeemable(web3=web3, target_timestamp=target_timestamp)
 
     await web3.provider.make_request("evm_increaseTime", [delta])  # around 20 days
     await web3.provider.make_request("evm_mine", [])
@@ -56,7 +54,7 @@ async def back_to_the_future(web3: AsyncWeb3, target_timestamp: int):
 
 
 async def compute_delta_to_redeemable(
-    web3: AsyncWeb3,
+    web3: AsyncW3,
     target_timestamp: int,
     buffer: int = 1,
 ) -> int:

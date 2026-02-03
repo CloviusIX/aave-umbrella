@@ -1,31 +1,31 @@
 from dataclasses import astuple
 
 from eth_account.signers.local import LocalAccount
-from web3 import AsyncWeb3
 
-from aave_umbrella.config.addresses import BATCH_HELPER_ADDRESS, GHO_STAKE_TOKEN
+from aave_umbrella.config.addresses import BATCH_HELPER_ADDRESS, GHO_UMBRELLA_STAKE_TOKEN
 from aave_umbrella.contracts.batch_helper import BatchHelper, IOData
 from aave_umbrella.contracts.erc20 import ERC20
+from aave_umbrella.providers.web3_client import AsyncW3
 
 
 async def deposit(
-    web3: AsyncWeb3,
+    web3: AsyncW3,
     user_account: LocalAccount,
     params: IOData,
     spender: str = BATCH_HELPER_ADDRESS,
 ) -> bool:
     """
     Deposit assets into Aave StakeToken
-    :param spender:
     :param web3: Web3 connection
     :param user_account: User account performing the deposit
     :param params: IOData object containing stake_token, edge_token, and value
+    :param spender: The address allowed to spend the edge token (usually the BatchHelper contract)
     :return: True if deposit succeeded
     """
 
     stake_token, edge_token, amount = astuple(params)
 
-    if stake_token == GHO_STAKE_TOKEN:
+    if stake_token == GHO_UMBRELLA_STAKE_TOKEN:
         raise NotImplementedError("GHO deposits are not supported yet.")
         # Call depositWithPermit() on GHO stake token
 

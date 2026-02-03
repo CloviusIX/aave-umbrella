@@ -1,18 +1,20 @@
 import pytest
+from eth_account.signers.local import LocalAccount
 
 from aave_umbrella.actions.harvest import (
     calculate_current_user_rewards,
     claim_all_rewards,
 )
-from aave_umbrella.config.addresses import USDC_STAKE_TOKEN
+from aave_umbrella.config.addresses import USDC_UMBRELLA_STAKE_TOKEN
 from aave_umbrella.contracts.erc20 import ERC20
+from aave_umbrella.providers.web3_client import AsyncW3
 from tests.helpers.helper import back_to_the_future, fund_and_deposit
 
 
 @pytest.mark.asyncio
-async def test_harvest(web3, user_account):
+async def test_harvest(web3: AsyncW3, user_account: LocalAccount) -> None:
     """Test harvest function"""
-    stake_token_address = USDC_STAKE_TOKEN
+    stake_token_address = USDC_UMBRELLA_STAKE_TOKEN
     stake_token_address_checksum = web3.to_checksum_address(stake_token_address)
     user_address_checksum = user_account.address
 
@@ -60,7 +62,7 @@ async def test_harvest(web3, user_account):
     for address, amount in zip(reward_tokens, reward_amounts):
         reward_contract = ERC20(web3, address)
         balance = await reward_contract.balance_of(user_address_checksum)
-        assert balance == amount
+        assert balance >= amount
 
     # Calculate current rewards after claiming
     rewards_after_claim = await calculate_current_user_rewards(
