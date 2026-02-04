@@ -2,16 +2,15 @@ from typing import AsyncIterator
 
 import pytest_asyncio
 from eth_account.signers.local import LocalAccount
-from web3 import AsyncWeb3
 
 from aave_umbrella.forks.account import get_user_account
-from aave_umbrella.providers.web3_client import AsyncW3
+from aave_umbrella.providers.web3_client import AsyncW3, build_web3_connection
 
 
 @pytest_asyncio.fixture(scope="session")
 async def web3() -> AsyncIterator[AsyncW3]:
     """Initialize Web3 connection to Anvil"""
-    w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider("http://127.0.0.1:8545"))
+    w3 = await build_web3_connection()
     yield w3
     await w3.provider.disconnect()
 
