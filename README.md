@@ -36,6 +36,16 @@ Clone the repository and install dependencies by running:
 make
 ```
 
+### IDE Configuration
+
+After installation, configure your IDE to use the virtual environment created in the project root.
+
+The Python interpreter is located at:
+
+```
+.venv/bin/python3.14
+```
+
 ### Forking Ethereum Mainnet
 
 Before running the notebook, start a local fork of Ethereum mainnet using **Anvil**:
