@@ -1,12 +1,12 @@
 import pytest
 from eth_account.signers.local import LocalAccount
 
+from aave_umbrella.actions.withdraw import redeem
 from aave_umbrella.config.addresses import (
-    BATCH_HELPER_ADDRESS,
     USDC_ADDRESS,
     USDC_UMBRELLA_STAKE_TOKEN,
 )
-from aave_umbrella.contracts.batch_helper import BatchHelper, IOData
+from aave_umbrella.contracts.batch_helper import IOData
 from aave_umbrella.contracts.erc20 import ERC20
 from aave_umbrella.contracts.stake_token import StakeToken
 from aave_umbrella.providers.web3_client import AsyncW3
@@ -20,7 +20,6 @@ async def test_redeem(web3: AsyncW3, user_account: LocalAccount) -> None:
     stake_token_address = USDC_UMBRELLA_STAKE_TOKEN
     edge_token_address = USDC_ADDRESS
     stake_token_contract = StakeToken(web3, stake_token_address)
-    batch_helper_contract = BatchHelper(web3)
 
     shares_balance = await fund_and_deposit(web3, user_account)
 
@@ -43,23 +42,16 @@ async def test_redeem(web3: AsyncW3, user_account: LocalAccount) -> None:
     # Move time forward to after the cooldown period
     await back_to_the_future(web3, end_of_cooldown)
 
-    # Approve the batch helper to redeem stake tokens
-    await stake_token_contract.approve(
-        signer=user_account,
-        spender=BATCH_HELPER_ADDRESS,
-        value=cooldown_expected_shares,
-    )
-
-    # Redeem stake tokens
-    tx_receipt = await batch_helper_contract.redeem(
-        signer=user_account,
-        params=IOData(
+    is_redeem_success = await redeem(
+        web3,
+        user_account,
+        redeem_params=IOData(
             stake_token=web3.to_checksum_address(stake_token_address),
             edge_token=web3.to_checksum_address(edge_token_address),
             value=cooldown_expected_shares,
         ),
     )
-    assert tx_receipt["status"] == 1
+    assert is_redeem_success is True
 
     stake_stata_contract = ERC20(web3, stake_token_address)
     stake_stata_balance = await stake_stata_contract.balance_of(wallet_address=user_account.address)
