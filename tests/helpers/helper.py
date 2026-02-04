@@ -8,6 +8,8 @@ from aave_umbrella.forks.funding import fund_user
 from aave_umbrella.providers.web3_client import AsyncW3
 from aave_umbrella.utils.math import amount_to_small_units
 
+USDC_WHALE_TEST = "0x2d4fbc5ee56f063d33e9c6390265eeac97afcda8"
+
 
 async def fund_and_deposit(web3: AsyncW3, user_account: LocalAccount) -> int:
     stake_token_address = USDC_UMBRELLA_STAKE_TOKEN
@@ -15,8 +17,15 @@ async def fund_and_deposit(web3: AsyncW3, user_account: LocalAccount) -> int:
     deposit_amount = amount_to_small_units(500, 6)  # 500 USDC
     stake_token_contract = ERC20(web3, stake_token_address)
 
+    token_to_wallets = {
+        USDC_ADDRESS: (
+            USDC_WHALE_TEST,
+            1000,
+        ),
+    }
+
     # Fund the user account
-    await fund_user(web3, user_account)
+    await fund_user(web3, user_account, token_to_wallets)
 
     # Deposit assets into the stake token
     deposit_status = await deposit(

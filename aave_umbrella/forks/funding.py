@@ -6,7 +6,7 @@ from aave_umbrella.forks.impersonate import impersonate_account
 from aave_umbrella.providers.web3_client import AsyncW3
 from aave_umbrella.utils.math import amount_to_small_units
 
-USDC_WHALE = "0x3757c6490019b6c9b0b38c3b89fdf83155c2661f"
+USDC_WHALE = "0x2d4fbc5ee56f063d33e9c6390265eeac97afcda8"
 
 # Default token configurations: {token_address: (whale_address, amount)}
 DEFAULT_TOKENS = {
