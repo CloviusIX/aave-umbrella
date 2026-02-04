@@ -27,10 +27,10 @@ async def anvil_set_balance(web3: AsyncW3, address: str, eth_amount: int) -> Non
     :param address: Account to send the ETH
     :param eth_amount: ETH balance to impersonate
     """
-    checksum = web3.to_checksum_address(address)
+    checksum_address = web3.to_checksum_address(address)
     wei = int(eth_amount * 10**18)
 
-    response = await web3.provider.make_request("anvil_setBalance", [checksum, hex(wei)])
+    response = await web3.provider.make_request("anvil_setBalance", [checksum_address, hex(wei)])
 
     if "error" in response:
         raise RuntimeError(f"anvil set balance error: {response['error']}")

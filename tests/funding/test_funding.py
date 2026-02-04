@@ -6,6 +6,7 @@ from aave_umbrella.contracts.erc20 import ERC20
 from aave_umbrella.forks.funding import fund_user
 from aave_umbrella.providers.web3_client import AsyncW3
 from aave_umbrella.utils.math import amount_to_small_units
+from tests.helpers.helper import USDC_WHALE_TEST
 
 
 @pytest.mark.asyncio
@@ -22,7 +23,7 @@ async def test_fund_user(web3: AsyncW3, user_account: LocalAccount) -> None:
 
     token_to_wallets = {
         USDC_ADDRESS: (
-            "0x3757c6490019b6c9b0b38c3b89fdf83155c2661f",
+            USDC_WHALE_TEST,
             expected_amount_int,
         ),
     }
