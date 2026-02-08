@@ -33,8 +33,12 @@ lint: venv
 	$(PYTHON) -m mypy .
 	$(PYTHON) -m ruff check --fix
 
-docker-up:
+# Set up Docker environment
+docker-setup:
+	@if [ ! -f .env ]; then cp .env.example .env; fi
+	$(DOCKER_COMPOSE) pull
 	$(DOCKER_COMPOSE) up -d
 
-docker-down:
-	$(DOCKER_COMPOSE) down
+# Restart Docker environment.
+docker-restart:
+	$(DOCKER_COMPOSE) restart
