@@ -1,5 +1,8 @@
 # Aave Umbrella — Forked Mainnet Integration
 
+This project demonstrates programmatic interaction with **Aave Umbrella** contracts using a **local fork of Ethereum mainnet**.
+All protocol calls are executed against real deployed contracts, using forked state for accuracy and realism.
+
 📘 **Technical Analysis & Documentation**
 
 A detailed technical analysis of **Aave Umbrella**, including protocol architecture, contract flows, risk analysis, and forked mainnet interactions, is available here:
@@ -10,21 +13,13 @@ This repository complements the documentation with executable code and real on-c
 
 ---
 
-## Overview
-
-This project demonstrates programmatic interaction with **Aave Umbrella** contracts using a **local fork of Ethereum mainnet**.
-All protocol calls are executed against real deployed contracts, using forked state for accuracy and realism.
-
----
-
 ## Prerequisites
 
 Make sure the following are installed on your machine:
 
-* **Python 3.14**
-* **Make** (required to run the project Makefile)
-* **Anvil** (Foundry local node)
-  Installation guide: [https://getfoundry.sh/anvil/overview/](https://getfoundry.sh/anvil/overview/)
+* **Python 3.14** (required Python version)
+* **Make** (to run the project Makefile)
+* **Docker Desktop** (includes Docker and Docker Compose)
 
 ---
 
@@ -46,33 +41,42 @@ The Python interpreter is located at:
 .venv/bin/python3.14
 ```
 
-### Forking Ethereum Mainnet
+### Local Ethereum Fork
 
-Before running the notebook, start a local fork of Ethereum mainnet using **Anvil**:
+This project uses **Anvil** to run a local fork of **Ethereum mainnet** in Docker.
+
+Start the environment with:
 
 ```bash
-anvil --fork-url https://ethereum.reth.rs/rpc --fork-block-number 24383419
+make docker-setup
 ```
 
-This forks Ethereum mainnet at a fixed block height to ensure deterministic behavior across runs.
+This command will:
 
-> ℹ️ The RPC URL is provided as a convenience. It can be replaced with any Ethereum mainnet RPC endpoint (e.g. Infura, Alchemy, local node) according to your preference.
+* create a `.env` file from `.env.example` with default environment variable values
+* pull the required Docker images
+* start the Anvil container in the background
 
-**Leave this process running in a separate terminal.**
-
-### Environment Configuration
-
-The project expects a local Ethereum RPC endpoint provided by Anvil.
-
-Create a .env file at the root of the repository and add the following variable:
+The local RPC endpoint will be available at:
 
 ```
-FORK_URL=http://127.0.0.1:8545
+http://127.0.0.1:8545
 ```
 
-This value should point to the RPC endpoint of your running Anvil fork.
+The fork runs at a **fixed block height** to guarantee deterministic results across runs.
 
-> ℹ️ If you start Anvil on a different host or port, update FORK_URL accordingly.
+> ℹ️ You can change the Ethereum RPC URL in the .env file if you prefer using your own (Alchemy, Infura, local node, etc.). If you modify these values, restart the Docker environment for the changes to take effect.
+
+
+### Restarting the environment
+
+If the fork needs to be reset or the .env variables have been updated, restart the environment with:
+
+```bash
+make docker-restart
+```
+This will recreate the containers and start a fresh fork.
+
 ---
 
 ## Running the Notebook
