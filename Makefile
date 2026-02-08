@@ -39,6 +39,7 @@ docker-setup:
 	$(DOCKER_COMPOSE) pull
 	$(DOCKER_COMPOSE) up -d
 
-# Restart Docker environment.
-docker-restart:
-	$(DOCKER_COMPOSE) restart
+# Reset Docker environment.
+docker-reset:
+	$(DOCKER_COMPOSE) down
+	$(DOCKER_COMPOSE) up -d

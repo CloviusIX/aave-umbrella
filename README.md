@@ -53,7 +53,7 @@ make docker-setup
 
 This command will:
 
-* create a `.env` file from `.env.example` with default environment variable values
+* create a `.env` file from `.env.example` if missing with default environment variable values
 * pull the required Docker images
 * start the Anvil container in the background
 
@@ -65,15 +65,15 @@ http://127.0.0.1:8545
 
 The fork runs at a **fixed block height** to guarantee deterministic results across runs.
 
-> ℹ️ You can change the Ethereum RPC URL in the .env file if you prefer using your own (Alchemy, Infura, local node, etc.). If you modify these values, restart the Docker environment for the changes to take effect.
+> ℹ️ You can change the Ethereum RPC URL (`ANVIL_FORK_URL`) in the `.env` file if you prefer using your own (Alchemy, Infura, local node, etc.). If you modify this value, you must reset the Docker environment for the changes to take effect.
 
 
-### Restarting the environment
+### Reset the environment
 
-If the fork needs to be reset or the .env variables have been updated, restart the environment with:
+If the fork needs to be reset or the `.env` variables have been updated, run:
 
 ```bash
-make docker-restart
+make docker-reset
 ```
 This will recreate the containers and start a fresh fork.
 
