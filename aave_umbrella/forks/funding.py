@@ -1,5 +1,10 @@
-from eth_account.signers.local import LocalAccount
+import json
 
+from eth_account.signers.local import LocalAccount
+from eth_typing import ChecksumAddress
+from web3.contract import AsyncContract
+
+from aave_umbrella.abi.erc20_abi import ERC20_ABI
 from aave_umbrella.config.addresses import USDC_ADDRESS
 from aave_umbrella.contracts.erc20 import ERC20
 from aave_umbrella.forks.impersonate import impersonate_account
@@ -31,18 +36,23 @@ async def fund_user(
         tokens = DEFAULT_TOKENS
 
     user_address = user_account.address
+    abi = json.loads(ERC20_ABI)
     all_success = True
 
     for token_address, (whale_address, amount) in tokens.items():
         token_contract = ERC20(web3, token_address)
         decimals = await token_contract.decimals()
         token_amount = amount_to_small_units(amount, decimals)
+        contract = web3.eth.contract(
+            address=web3.to_checksum_address(token_address),
+            abi=abi,
+        )
 
         async with impersonate_account(web3, whale_address):
             success = await _fund(
                 web3,
-                token_address=token_address,
-                from_address=whale_address,
+                contract=contract,
+                from_address=web3.to_checksum_address(whale_address),
                 to_address=user_address,
                 amount=token_amount,
             )
@@ -53,12 +63,26 @@ async def fund_user(
 
 async def _fund(
     web3: AsyncW3,
-    token_address: str,
-    from_address: str,
-    to_address: str,
+    *,
+    contract: AsyncContract,
+    from_address: ChecksumAddress,
+    to_address: ChecksumAddress,
     amount: int,
 ) -> bool:
-    token = ERC20(web3, token_address)
-    tx_receipt = await token.transfer(signer=from_address, to=to_address, amount=amount)
+    """
+    Transfer tokens from impersonate account
+    :param web3: Web3 connection
+    :param contract: Token contract
+    :param from_address: Impersonated address
+    :param to_address: Funding address
+    :param amount: Amount to fund (e.g. 100 USDC)
+    :return: True if all funding succeeded
+    """
+    sent_tx = await contract.functions.transfer(
+        to_address,
+        amount,
+    ).transact({"from": from_address})
+
+    tx_receipt = await web3.eth.wait_for_transaction_receipt(sent_tx)
 
     return tx_receipt["status"] == 1
