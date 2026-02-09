@@ -18,7 +18,7 @@ class ERC20(BaseContract):
         decimals = await self.call("decimals")
         return int(decimals)
 
-    async def transfer(self, signer: LocalAccount | str, to: str, amount: int) -> TxReceipt:
+    async def transfer(self, signer: LocalAccount, to: str, amount: int) -> TxReceipt:
         return await self.tx("transfer", signer, self.web3.to_checksum_address(to), amount)
 
     async def approve(self, signer: LocalAccount, spender: str, amount: int) -> TxReceipt:
