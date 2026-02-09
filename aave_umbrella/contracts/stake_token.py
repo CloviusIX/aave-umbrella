@@ -18,7 +18,7 @@ class StakeToken(BaseContract):
     def __init__(self, web3: AsyncW3, address: str):
         super().__init__(web3, address, STAKE_TOKEN_IMPL_ABI)
 
-    async def approve(self, signer: LocalAccount | str, spender: str, value: int) -> TxReceipt:
+    async def approve(self, signer: LocalAccount, spender: str, value: int) -> TxReceipt:
         return await self.tx("approve", signer, self.web3.to_checksum_address(spender), value)
 
     async def cooldown(self, signer: LocalAccount) -> TxReceipt:
